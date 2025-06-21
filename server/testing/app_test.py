@@ -112,10 +112,12 @@ class TestApp:
     def test_returns_data_for_updated_message_as_json(self):
         '''returns data for the updated message as JSON.'''
         with app.app_context():
+            # Create a message to update
+            m = Message(body="Hello 👋", username="Liza")
+            db.session.add(m)
+            db.session.commit()
 
-            m = Message.query.first()
             id = m.id
-            body = m.body
 
             response = app.test_client().patch(
                 f'/messages/{id}',
@@ -128,8 +130,10 @@ class TestApp:
             assert(response.json["body"] == "Goodbye 👋")
 
             g = Message.query.filter_by(body="Goodbye 👋").first()
-            g.body = body
-            db.session.add(g)
+            assert(g)
+
+            # Clean up
+            db.session.delete(g)
             db.session.commit()
 
     def test_deletes_message_from_database(self):

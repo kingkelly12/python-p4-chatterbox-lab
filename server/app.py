@@ -44,9 +44,21 @@ def messages():
     ]
     return jsonify(messages_list)
 
-@app.route('/messages/<int:id>')
-def messages_by_id(id):
-    return ''
+@app.route('/messages/<int:id>', methods=['PATCH'])
+def update_message(id):
+    message = Message.query.get_or_404(id)
+    data = request.get_json()
+    if "body" in data:
+        message.body = data["body"]
+    if "username" in data:
+        message.username = data["username"]
+    db.session.commit()
+    return jsonify({
+        "id": message.id,
+        "body": message.body,
+        "username": message.username,
+        "created_at": message.created_at.isoformat() if message.created_at else None
+    })
 
 if __name__ == '__main__':
     app.run(port=5555)
