@@ -59,6 +59,13 @@ def update_message(id):
         "username": message.username,
         "created_at": message.created_at.isoformat() if message.created_at else None
     })
+    
+@app.route('/messages/<int:id>', methods=['DELETE'])
+def delete_message(id):
+    message = Message.query.get_or_404(id)
+    db.session.delete(message)
+    db.session.commit()
+    return make_response('', 204)
 
 if __name__ == '__main__':
     app.run(port=5555)
