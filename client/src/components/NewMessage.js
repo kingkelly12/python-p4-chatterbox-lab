@@ -12,8 +12,10 @@ function NewMessage({ currentUser, onAddMessage }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: currentUser.username,
+        userId: currentUser.id,
         body: body,
+        username: currentUser.username,
+        createdAt: new Date().toISOString(),
       }),
     })
       .then((r) => r.json())
